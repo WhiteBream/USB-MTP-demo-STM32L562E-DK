@@ -20,6 +20,8 @@
 #include "main.h"
 #include "app_fatfs.h"
 #include "usb_device.h"
+#include "vfs.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -145,6 +147,7 @@ int main(void)
   MX_OCTOSPI1_Init();
   MX_SAI1_Init();
   _MX_SDMMC1_SD_Init();
+  BSP_SD_Init(0);
   MX_SPI1_Init();
   MX_TIM4_Init();
   MX_TIM16_Init();
@@ -152,6 +155,7 @@ int main(void)
   MX_UCPD1_Init();
   //if (MX_FATFS_Init() != APP_OK) {
   //}
+  vfs_init();
   MX_USB_Device_Init();
   /* USER CODE BEGIN 2 */
 
@@ -1166,7 +1170,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
+#if 0
 WCHAR ff_convert (WCHAR wch, UINT dir)
 {
           if (wch < 0x80) {
@@ -1191,4 +1195,4 @@ WCHAR ff_wtoupper (WCHAR wch)
           /* I don't support unicode it is too big! */
           return 0;
 }
-
+#endif

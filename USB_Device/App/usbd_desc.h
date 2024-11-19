@@ -53,6 +53,7 @@
 #define         USB_SIZ_STRING_SERIAL       0x1A
 
 /* USER CODE BEGIN EXPORTED_CONSTANTS */
+#define WBVAL(x) ((x) & 0xFF),(((x) >> 8) & 0xFF)
 
 /* USER CODE END EXPORTED_CONSTANTS */
 

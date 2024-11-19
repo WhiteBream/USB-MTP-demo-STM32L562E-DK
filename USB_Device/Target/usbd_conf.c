@@ -25,6 +25,7 @@
 #include "usbd_core.h"
 
 #include "usbd_msc.h"
+#include "usbd_mtp.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -412,7 +413,7 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   HAL_PWREx_EnableVddUSB();
 
   hpcd_USB_FS.Instance = USB;
-  hpcd_USB_FS.Init.dev_endpoints = 8;
+  hpcd_USB_FS.Init.dev_endpoints = 3;
   hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
   hpcd_USB_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
   hpcd_USB_FS.Init.Sof_enable = DISABLE;
@@ -446,12 +447,17 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   /* USER CODE END RegisterCallBackSecondPart */
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
   /* USER CODE BEGIN EndPoint_Configuration */
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x00 , PCD_SNG_BUF, 0x18);
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x80 , PCD_SNG_BUF, 0x58);
+//  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x00 , PCD_SNG_BUF, 0x18);
+//  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x80 , PCD_SNG_BUF, 0x58);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x00, PCD_SNG_BUF, 0x10);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x80, PCD_SNG_BUF, 0x50);
   /* USER CODE END EndPoint_Configuration */
   /* USER CODE BEGIN EndPoint_Configuration_MSC */
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x81 , PCD_SNG_BUF, 0x98);
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x01 , PCD_SNG_BUF, 0xD8);
+//  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x81 , PCD_SNG_BUF, 0x98);
+//  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x01 , PCD_SNG_BUF, 0xD8);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, MTP_EPIN_ADDR, PCD_SNG_BUF, 0x90);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, MTP_EPOUT_ADDR, PCD_SNG_BUF, 0xD0);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, MTP_EP2IN_ADDR, PCD_SNG_BUF, 0x110);
   /* USER CODE END EndPoint_Configuration_MSC */
   return USBD_OK;
 }

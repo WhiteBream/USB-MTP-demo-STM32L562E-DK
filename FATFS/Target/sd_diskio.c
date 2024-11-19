@@ -59,15 +59,15 @@ static volatile DSTATUS Stat = STA_NOINIT;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-static DSTATUS SD_CheckStatus(BYTE lun);
-DSTATUS SD_initialize (BYTE);
-DSTATUS SD_status (BYTE);
-DRESULT SD_read (BYTE, BYTE*, DWORD, UINT);
+static DSTATUS SD_CheckStatus(void);
+DSTATUS SD_initialize (void);
+DSTATUS SD_status (void);
+DRESULT SD_read (BYTE*, DWORD, UINT);
 #if _USE_WRITE == 1
-  DRESULT SD_write (BYTE, const BYTE*, DWORD, UINT);
+  DRESULT SD_write (const BYTE*, DWORD, UINT);
 #endif /* _USE_WRITE == 1 */
 #if _USE_IOCTL == 1
-  DRESULT SD_ioctl (BYTE, BYTE, void*);
+  DRESULT SD_ioctl (BYTE, void*);
 #endif  /* _USE_IOCTL == 1 */
 
 /* USER CODE BEGIN PFP */
@@ -89,7 +89,7 @@ const Diskio_drvTypeDef  SD_Driver =
 };
 
 /* Private functions ---------------------------------------------------------*/
-static DSTATUS SD_CheckStatus(BYTE lun)
+static DSTATUS SD_CheckStatus(void)
 {
   Stat = STA_NOINIT;
   if(BSP_SD_GetCardState(0) == BSP_ERROR_NONE)
@@ -105,18 +105,18 @@ static DSTATUS SD_CheckStatus(BYTE lun)
   * @param  lun : not used
   * @retval DSTATUS: Operation status
   */
-DSTATUS SD_initialize(BYTE lun)
+DSTATUS SD_initialize(void)
 {
   /* USER CODE BEGIN SDinitialize */
   Stat = STA_NOINIT;
 #if !defined(DISABLE_SD_INIT)
   if(BSP_SD_Init(0) == BSP_ERROR_NONE)
   {
-    Stat = SD_CheckStatus(lun);
+    Stat = SD_CheckStatus();
   }
   BSP_SD_DetectITConfig(0);
 #else
-  Stat = SD_CheckStatus(lun);
+  Stat = SD_CheckStatus();
 #endif
   return Stat;
   /* USER CODE END SDinitialize */
@@ -127,9 +127,9 @@ DSTATUS SD_initialize(BYTE lun)
   * @param  lun : not used
   * @retval DSTATUS: Operation status
   */
-DSTATUS SD_status(BYTE lun)
+DSTATUS SD_status(void)
 {
-  return SD_CheckStatus(lun);
+  return SD_CheckStatus();
 }
 
 /**
@@ -140,7 +140,7 @@ DSTATUS SD_status(BYTE lun)
   * @param  count: Number of sectors to read (1..128)
   * @retval DRESULT: Operation result
   */
-DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
+DRESULT SD_read(BYTE *buff, DWORD sector, UINT count)
 {
   DRESULT res = RES_ERROR;
   if(BSP_SD_ReadBlocks(0, (uint32_t*)buff,
@@ -165,7 +165,7 @@ DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
   * @retval DRESULT: Operation result
   */
 #if _USE_WRITE == 1
-DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
+DRESULT SD_write(const BYTE *buff, DWORD sector, UINT count)
 {
   DRESULT res = RES_ERROR;
   if(BSP_SD_WriteBlocks(0, (uint32_t*)buff,
@@ -192,7 +192,7 @@ DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
   * @retval DRESULT: Operation result
   */
 #if _USE_IOCTL == 1
-DRESULT SD_ioctl(BYTE lun, BYTE cmd, void *buff)
+DRESULT SD_ioctl(BYTE cmd, void *buff)
 {
   DRESULT res = RES_ERROR;
   HAL_SD_CardInfoTypeDef CardInfo;
